@@ -22,7 +22,30 @@ db.restaurants.find({ "grades.grade" : "A" }, {_id : 0, name : 1})
 db.restaurants.find({"grades.grade" :{ $not : { $nin : ["A"]} } }, {_id : 0, name : 1, "grades.grade" : 1 })
 ```
 
-3. Trouver tous les restaurants qui ont obtenu un score supérieur à 10 :
+La question que des notes grades.grade A est plus technique...
+
+```js
+
+db.restaurants.find({
+  "grades": {
+      $elemMatch: {
+        grade: { $ne: "A" }
+      }
+  }
+}, { "grades.grade" : 1})
+
+db.restaurants.find({
+  "grades": {
+    $not: {
+      $elemMatch: {
+        grade: { $ne: "A" }
+      }
+    }
+  }
+}, { "grades.garde" : 1})
+```
+
+1. Trouver tous les restaurants qui ont obtenu un score supérieur à 10 :
 
 ```js
 db.restaurants.find({ "grades.score" : {$gt : 10 } }, {_id : 0, name : 1})
