@@ -23,12 +23,22 @@ db.restaurants.aggregate([
 
 db.restaurants.aggregate([
     { $unwind : "$grades"},
-    { $group : {_id : "$borough" , avgScore : { $avg : "$grades.score" } }}
+    { $group : {_id : "$borough" , avgScore : { $avg : "$grades.score" } }},
+    { $project : { _id : 1, avgScore : { $round : ["$avgScore", 2] } } }
 ])
 
 ```
 
 3. Calculez le nombre moyen de grades par restaurant. 
+
+```js
+db.restaurants.aggregate([
+    { $project : { numberGrades : { $size : "$grades" } } },
+    { $group : { _id : null, avgGrade : { $avg : "$numberGrades" } }},
+    { $project : { avgGrade : {$round: ["$avgGrade",2]}, _id : 0 }}
+])
+
+```
 
 4. Trouvez le nombre de restaurants ayant obtenu une note "A" dans chaque quartier.
 
