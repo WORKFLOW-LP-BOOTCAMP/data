@@ -2,9 +2,31 @@
 
 1. Calculez le nombre total de restaurants dans la collection.
 
-2. Trouvez le nombre de restaurants dans chaque quartier (borough).
+```js
 
-3. Calculez la moyenne des scores des restaurants par quartier. Utilisez l'opérateur `$unwind` pour dépiler les grades pour effectuer les calculs.
+```
+
+1. Trouvez le nombre de restaurants dans chaque quartier (borough).
+
+2. Calculez la moyenne des scores des restaurants par quartier. Utilisez l'opérateur `$unwind` pour dépiler les grades pour effectuer les calculs.
+
+```js
+
+// juste pour comprendre ce qu'il fait avec  $unwind regarder le nombre de doc créés en fonction du nombre de grades.
+
+
+db.restaurants.aggregate([
+    { $unwind : "$grades"},
+    {$match : { name :"Brunos On The Boulevard"} },
+    { $project : { "grades" : 1 }}
+])
+
+db.restaurants.aggregate([
+    { $unwind : "$grades"},
+    { $group : {_id : "$borough" , avgScore : { $avg : "$grades.score" } }}
+])
+
+```
 
 3. Calculez le nombre moyen de grades par restaurant. 
 
@@ -16,7 +38,7 @@
 
 7. Calculez le nombre de restaurants par type de cuisine (cuisine).
 
-8. Trouvez le restaurant le mieux noté dans chaque quartier.
+8.  Trouvez le restaurant le mieux noté dans chaque quartier.
 
 9.  Calculez le score moyen de chaque type de cuisine (cuisine).
 
@@ -28,6 +50,6 @@
 
 13. Calculez le nombre moyen de grades pour chaque type de cuisine (cuisine).
 
-14. Trouvez le nombre de restaurants ayant plus de 3 grades "B" dans chaque quartier.
+15. Trouvez le nombre de restaurants ayant plus de 3 grades "B" dans chaque quartier.
 
-15. Calculez le score moyen de chaque quartier pour chaque type de cuisine (cuisine).
+16. Calculez le score moyen de chaque quartier pour chaque type de cuisine (cuisine).
