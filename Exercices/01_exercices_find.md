@@ -39,12 +39,18 @@ db.restaurants.find({
 5. Trouver tous les restaurants qui ont une adresse dans la rue "Stillwell Avenue" :
 
 ```js
-db.restaurants.find({ $and: [ { "grades.grade": "A" }, { "grades.score": 5 }] }, { _id: 0, name: 1, "grades.grade": 1, "grades.score": 1 })
+db.restaurants.find({ "address.street" : "Stillwell Avenue" }, {_id : 0, name : 1})
 
-db.restaurants.find({ $and: [ { "grades.grade": "A" }, { "grades.score": 5 }] }, { _id: 0, name: 1, "grades.grade": 1, "grades.score": 1 }).count()
 ```
 
 6. Trouver tous les restaurants qui ont été inspectés en 2014 (nous verrons une requête avec l'agrégation pour obtenir uniquement les restaurants inspectés en 2014)
+
+```js
+db.restaurants.find({ "grades.date" : { $gte : ISODate('2014-01-01') , $lt: ISODate('2015-01-01') } },
+{_id : 0, name : 1, "grades.date" : 1}
+)
+
+```
 
 7. Trouver tous les restaurants qui ont obtenu une note "A" après 2010 :
 
