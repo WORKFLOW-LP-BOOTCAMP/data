@@ -185,13 +185,35 @@ db.restaurants.find({
     }
   }
 }, { "grades.grade" : 1})
+
+db.restaurants.find( { 
+    $expr : { $gt : [ { $sum : "$grades.score" }  , 30 ]}  
+} )
+
+db.restaurants.find({
+    $and : [
+        {
+            "grades": {
+                $not: {
+                    $elemMatch: {
+                        grade: { $ne: "A" }
+                    }
+                }
+            }
+        },
+        {
+            $expr : { 
+                $gt : [ { $sum : "$grades.score" }  , 30 ]} 
+        }
+    ]
+})
 ```
 
-2. Trouvez tous les restaurants qui ont reçu une note "A" pour au moins un de leurs grades et dont la moyenne des scores des grades est supérieure à 8.
+1. Trouvez tous les restaurants qui ont reçu une note "A" pour au moins un de leurs grades et dont la moyenne des scores des grades est supérieure à 8.
 
-3. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la différence entre le score de leur premier et dernier grade est supérieure à 5.
+2. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la différence entre le score de leur premier et dernier grade est supérieure à 5.
 
-4.  Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la moyenne des scores des grades est supérieure à la moyenne des scores de tous les restaurants.
+3.  Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la moyenne des scores des grades est supérieure à la moyenne des scores de tous les restaurants.
    
 
 
