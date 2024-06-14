@@ -114,35 +114,88 @@ db.restaurants.find( {
 } )
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 1. Trouvez tous les restaurants qui ont reçu une note "A" pour au moins un de leurs grades et une note "B" pour au moins un autre grade.
 
+Pensez à utiliser les opérateurs logiques pour éviter des requêtes ambigues
+
+```js
+db.restaurants.find( { 
+    $and : [
+        { "grades.grade" : "A" },
+        { "grades.grade" : "B" },
+    ]
+})
+```
 2. Trouvez tous les restaurants qui n'ont jamais reçu une note "C" dans leurs grades.
 
+```js
+db.restaurants.find( 
+    { "grades.grade" : { $not : { $eq : "C" } } },
+    { "grades.grade" : 1 }
+ )
+
+// de manière équivalente
+db.restaurants.find( 
+    { "grades.grade" : { $ne : "C" } } ,
+    { "grades.grade" : 1 }
+ )
+
+```
 3. Trouvez tous les restaurants qui ont reçu une note "A" pour leur dernier grade.
+
+```js
+db.restaurants.find( 
+    { "grades.0.grade" : "A" } ,
+    { "grades.grade" : 1 }
+ )
+```
 
 4. Trouvez tous les restaurants qui ont reçu une note "A" dans leur premier grade et une note "B" dans leur dernier grade.
 
+```js
+db.restaurants.find( 
+    { "grades.0.grade" : "A" } ,
+    { "grades.grade" : 1 }
+ )
+```
+
 5. Trouvez tous les restaurants qui ont reçu une note "A" pour leur premier grade et une note "B" pour leur deuxième grade, mais pas pour leur troisième grade.
 
-6. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la somme des scores des grades est supérieure à 30.
+```js
+db.restaurants.find({
+    $expr: {
+      $and: [
+        { $eq: [{ $arrayElemAt: ["$grades.grade", 0] }, "A"] },
+        { $eq: [{ $arrayElemAt: ["$grades.grade", -1] }, "B"] }
+      ]
+    }
+})
+```
 
-7. Trouvez tous les restaurants qui ont reçu une note "A" pour au moins un de leurs grades et dont la moyenne des scores des grades est supérieure à 8.
+1. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la somme des scores des grades est supérieure à 30.
 
-8. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la différence entre le score de leur premier et dernier grade est supérieure à 5.
+```js
 
-9. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la moyenne des scores des grades est supérieure à la moyenne des scores de tous les restaurants.
+db.restaurants.find({
+  "grades": {
+    $not: {
+      $elemMatch: {
+        grade: { $ne: "A" }
+      }
+    }
+  }
+}, { "grades.grade" : 1})
+```
+
+2. Trouvez tous les restaurants qui ont reçu une note "A" pour au moins un de leurs grades et dont la moyenne des scores des grades est supérieure à 8.
+
+3. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la différence entre le score de leur premier et dernier grade est supérieure à 5.
+
+4.  Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la moyenne des scores des grades est supérieure à la moyenne des scores de tous les restaurants.
    
+
+
+
 ## Exercices sur la partie approndissement
 
 1. Trouvez tous les restaurants dont le nom commence par "Pizza" en utilisant une expression régulière. rmq : filtrage avec `$regex`
