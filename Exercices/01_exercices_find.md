@@ -106,6 +106,25 @@ db.restaurants.find({ "name" :  { $regex : /^Riviera/i} },{_id : 0, name : 1 } )
 
 ## Deuxième liste
 
+Indications pour les exercices suivants 
+
+```js
+db.restaurants.find( { 
+    $expr : { $gt : [ { $sum : "$grades.score" }  , 30 ]}  
+} )
+```
+
+
+
+
+
+
+
+
+
+
+
+
 1. Trouvez tous les restaurants qui ont reçu une note "A" pour au moins un de leurs grades et une note "B" pour au moins un autre grade.
 
 2. Trouvez tous les restaurants qui n'ont jamais reçu une note "C" dans leurs grades.
