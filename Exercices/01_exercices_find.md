@@ -211,19 +211,39 @@ db.restaurants.find({
 
 1. Trouvez tous les restaurants qui ont reçu une note "A" pour au moins un de leurs grades et dont la moyenne des scores des grades est supérieure à 8.
 
+```js
+db.restaurants.find(
+    { 
+        $and : [
+            { "grades.grade": "A" },
+            { $expr: { $gt: [{ $avg: "$grades.score" }, 8] } }
+        ]
+    },
+     {"grades" : 1, "names" : 1 }
+)
+```
 2. Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la différence entre le score de leur premier et dernier grade est supérieure à 5.
 
-3.  Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la moyenne des scores des grades est supérieure à la moyenne des scores de tous les restaurants.
+```js
+db.restaurants.find({ 
+    $and : [
+        {  
+            "grades": {
+                $not: {
+                $elemMatch: {
+                    grade: { $ne: "A" }
+                }
+                }
+            }
+         },
+        {  
+            $expr: { $gt: [{ $subtract: [{ $arrayElemAt: ["$grades.score", -1] }, { $arrayElemAt: ["$grades.score", 0] }] }, 5] } 
+        }
+    ]},
+    { "grades": 1 }
+)
+
+```
+
+1.  Trouvez tous les restaurants qui ont reçu une note "A" pour tous leurs grades et dont la moyenne des scores des grades est supérieure à la moyenne des scores de tous les restaurants.
    
-
-
-
-## Exercices sur la partie approndissement
-
-1. Trouvez tous les restaurants dont le nom commence par "Pizza" en utilisant une expression régulière. rmq : filtrage avec `$regex`
-
-1. Trouvez tous les restaurants dans un rayon de 5 km d'un point géographique donné (latitude, longitude) en utilisant un index géospatial sur les coordonnées.
-
-1. Trouvez tous les restaurants et incluez uniquement les champs `name`, `borough` et `address` dans les résultats.
-
-1. Trouvez tous les restaurants avec un nom contenant "Sushi" et dont le score moyen est supérieur à 7, en utilisant un index textuel pour accélérer la recherche du nom et une opération d'agrégation `$group` suivie d'une opération de filtrage avec `find` pour le calcul du score moyen.
