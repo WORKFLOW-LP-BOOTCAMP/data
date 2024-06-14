@@ -2,19 +2,51 @@
 
 1. Trouver tous les restaurants à Brooklyn
 
+```js
+db.restaurants.find({ borough : "Brooklyn" })
+db.restaurants.find({ borough : "Brooklyn" }, {_id : 0, name : 1})
+```
+
 1. Trouver tous les restaurants qui servent de la cuisine américaine :
 
-1. Trouver tous les restaurants qui ont reçu une note "A" :
+```js
+db.restaurants.find({ cuisine : "American" }, {_id : 0, name : 1})
+```
 
-1. Trouver tous les restaurants qui ont obtenu un score supérieur à 10 :
+2. Trouver tous les restaurants qui ont reçu une note "A" :
 
-1. Trouver tous les restaurants qui ont reçu une note "A" avec un score de 5 :
+```js
+db.restaurants.find({ "grades.grade" : "A" }, {_id : 0, name : 1})
+```
 
-1. Trouver tous les restaurants qui ont une adresse dans la rue "Stillwell Avenue" :
+3. Trouver tous les restaurants qui ont obtenu un score supérieur à 10 :
+
+```js
+db.restaurants.find({ "grades.score" : {$gt : 10 } }, {_id : 0, name : 1})
+```
+
+4. Trouver tous les restaurants qui ont reçu une note "A" avec un score de 5 :
    
-1. Trouver tous les restaurants qui ont été inspectés en 2014 (nous verrons une requête avec l'agrégation pour obtenir uniquement les restaurants inspectés en 2014)
+```js
+db.restaurants.find({ 
+    $and : [
+        {"grades.grade" : "A"},
+        {"grades.score" : 5 },
+    ]
+ }, {_id : 0, name : 1, "grades.grade" : 1 , "grades.score" : 1})
+```
 
-1. Trouver tous les restaurants qui ont obtenu une note "A" après 2010 :
+5. Trouver tous les restaurants qui ont une adresse dans la rue "Stillwell Avenue" :
+
+```js
+db.restaurants.find({ $and: [ { "grades.grade": "A" }, { "grades.score": 5 }] }, { _id: 0, name: 1, "grades.grade": 1, "grades.score": 1 })
+
+db.restaurants.find({ $and: [ { "grades.grade": "A" }, { "grades.score": 5 }] }, { _id: 0, name: 1, "grades.grade": 1, "grades.score": 1 }).count()
+```
+
+6. Trouver tous les restaurants qui ont été inspectés en 2014 (nous verrons une requête avec l'agrégation pour obtenir uniquement les restaurants inspectés en 2014)
+
+7. Trouver tous les restaurants qui ont obtenu une note "A" après 2010 :
 
 
 1. Trouver tous les restaurants qui ont un code postal (zipcode) égal à "11224" :
