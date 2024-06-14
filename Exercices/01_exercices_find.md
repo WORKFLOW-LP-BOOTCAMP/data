@@ -17,6 +17,9 @@ db.restaurants.find({ cuisine : "American" }, {_id : 0, name : 1})
 
 ```js
 db.restaurants.find({ "grades.grade" : "A" }, {_id : 0, name : 1})
+
+
+db.restaurants.find({"grades.grade" :{ $not : { $nin : ["A"]} } }, {_id : 0, name : 1, "grades.grade" : 1 })
 ```
 
 3. Trouver tous les restaurants qui ont obtenu un score supérieur à 10 :
@@ -49,16 +52,34 @@ db.restaurants.find({ "address.street" : "Stillwell Avenue" }, {_id : 0, name : 
 db.restaurants.find({ "grades.date" : { $gte : ISODate('2014-01-01') , $lt: ISODate('2015-01-01') } },
 {_id : 0, name : 1, "grades.date" : 1}
 )
-
 ```
 
 7. Trouver tous les restaurants qui ont obtenu une note "A" après 2010 :
 
+```js
+db.restaurants.find({ "grades.grade" :  "A" , "grades.date" : { $gte : ISODate('2011-01-01' )} },
+{_id : 0, name : 1, "grades.date" : 1})
+```
 
 1. Trouver tous les restaurants qui ont un code postal (zipcode) égal à "11224" :
 
+```js
+db.restaurants.find({ "address.zipcode" :  "11224" },
+{_id : 0, name : 1, "address" : 1})
+```
 
 1.  Trouver tous les restaurants dont le nom contient le mot "Riviera" :
+
+```js
+db.restaurants.find({ "name" :  { $regex : /Riviera/} },{_id : 0, name : 1 } )
+
+// dont les noms des restaurants commencent par Riviera : ^
+db.restaurants.find({ "name" :  { $regex : /^Riviera/} },{_id : 0, name : 1 } )
+
+// insensible à la casse avec l'option i 
+db.restaurants.find({ "name" :  { $regex : /^Riviera/i} },{_id : 0, name : 1 } )
+
+```
 
 ## Deuxième liste
 
