@@ -1,4 +1,4 @@
-# Requête spéciale comprendre
+# Requête spéciale 
 
 ```js
 db.restaurants.find({
